@@ -71,6 +71,91 @@ function selectQueryIne($sql)
     }
 }
 
+
+function listPersons()
+{
+    $query = selectQuery("SELECT * FROM `Persona`");
+
+    if ($query != 0) { ?>
+
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col-2">Curp</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Clave de elector</th>
+      <th scope="col">Año de Registro</th>
+      <th scope="col">Emisión</th>
+      <th scope="col">Vigencia</th>
+      <th scope="col">Sección</th>
+    </tr>
+  </thead>
+
+  <?php while ($row = $query->fetch_assoc()) {
+
+                $person = getPerson($row['curp']);
+
+                //revisamos si la persona es mayor de edad
+                $dia = $person->birthday->day;
+                $mes = $person->birthday->year;
+                $ano = $person->birthday->month;
+
+                $actual = 2022;
+
+
+                echo '
+            <tr>
+                <th scope="row">' . $person->curp . '</th>
+                <td>' . $person->name . ' ' . $person->lastName1 . ' ' . $person->lastName2 . '</td>';
+
+                if (($actual - $ano) > 18) {
+
+                    $personIne = getPersonIne($row['curp']);
+
+                    //revisamos si la persona esta registrada o no en el ine
+                    $existence = selectQueryIne("SELECT `curp` FROM `ine` WHERE `curp` = '$person->curp'");
+
+                    if ($existence == 0) {
+                        //la persona aun no cuenta con una ine pero puede tenerla
+                        echo '<th scope="row">-</th>';
+                        echo '<th scope="row">-</th>';
+                        echo '<th scope="row">-</th>';
+                        echo '<th scope="row">-</th>';
+                        echo '<th scope="row">-</th>';
+                        //la persona puede ser registrada mostrar el botón
+                        echo '<td><a class="btn btn-primary" href="./register.php?curp=' . $person->curp . '">Registrar</a></td>';
+                    } else {
+                        echo '<th scope="row">' . $personIne->claveElector . '</th>';
+                        echo '<th scope="row">' . $personIne->anoRegistro . '</th>';
+                        echo '<th scope="row">' . $personIne->emision . '</th>';
+                        echo '<th scope="row">' . $personIne->vigencia . '</th>';
+                        echo '<th scope="row">' . $personIne->seccion . '</th>';
+                        echo '<td><a class="btn btn-primary" href="./view_ine.php?curp=' . $personIne->claveElector . '">Visualizar</a></td>';
+                    }
+                } else {
+                    echo '<th scope="row">-</th>';
+                    echo '<th scope="row">-</th>';
+                    echo '<th scope="row">-</th>';
+                    echo '<th scope="row">-</th>';
+                    echo '<th scope="row">-</th>';
+                    echo '<td><button disabled class="btn btn-primary" href="#">No válido</button></td>';
+                }
+                echo '</tr>';
+            } ?>
+
+
+  <!-- colocamos el tbody -->
+  </tbody>
+</table>
+
+
+<?php } else {
+        echo 'no hay registros que cumplan tu busqueda.';
+    }
+}
+
+
 function searchPerson($curp)
 {
     $query = selectQuery("SELECT * FROM `Persona` WHERE `curp` LIKE '%$curp%'");
@@ -78,71 +163,78 @@ function searchPerson($curp)
     if ($query != 0) { ?>
 
 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col-2">Curp</th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">FechaRegistro</th>
-                    <th scope="col">Municipio</th>
-                    <th scope="col">Estado</th>
-                    <th scope="col">Certificado</th>
-                    <th scope="col">Libro</th>
-                    <th scope="col">No Acta</th>
-                    <th scope="col">Oficialía</th>
-                    <th scope="col">Status</th>
-                </tr>
-        </thead>
-    
-    <?php while ($row = $query->fetch_assoc()) { 
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col-2">Curp</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Clave de elector</th>
+      <th scope="col">Año de Registro</th>
+      <th scope="col">Emisión</th>
+      <th scope="col">Vigencia</th>
+      <th scope="col">Sección</th>
+    </tr>
+  </thead>
 
-            $person = getPerson($row['curp']);
-            
-            //revisamos si la persona es mayor de edad
-            $dia = $person->birthday->day;
-            $mes = $person->birthday->year;
-            $ano = $person->birthday->month;
+  <?php while ($row = $query->fetch_assoc()) {
 
-            $actual = 2022;
+                $person = getPerson($row['curp']);
+
+                //revisamos si la persona es mayor de edad
+                $dia = $person->birthday->day;
+                $mes = $person->birthday->year;
+                $ano = $person->birthday->month;
+
+                $actual = 2022;
 
 
-            echo '
+                echo '
             <tr>
                 <th scope="row">' . $person->curp . '</th>
-                <td>' . $person->name . ' ' . $person->lastName1 . ' ' . $person->lastName2 . '</td>
-                <td>' . $person->registerDate->day . '-' . $person->registerDate->year . '-' . $person->registerDate->month . '</td>
-                <td>' . $person->municipioName . '</td>
-                <td>' . $person->estadoName . '</td>
-                <td>' . $person->cerificationNumber . '</td>
-                <td>' . $person->book . '</td>
-                <td>' . $person->actaNumber . '</td>
-                <td>' . $person->oficialia . '</td>';
+                <td>' . $person->name . ' ' . $person->lastName1 . ' ' . $person->lastName2 . '</td>';
 
-            if(($actual - $ano) > 18) {
-                
-                //revisamos si la persona esta registrada o no en el ine
-                $existence = selectQueryIne("SELECT `curp` FROM `ine` WHERE `curp` = '$person->curp'");                
-                
-                if($existence == 0) {
-                    //la persona puede ser registrada mostrar el botón
-                    echo '<td><a class="btn btn-primary" href="./register.php?curp='.$person->curp.'">Registrar</a></td>';
+                if (($actual - $ano) > 18) {
+
+                    $personIne = getPersonIne($row['curp']);
+
+                    //revisamos si la persona esta registrada o no en el ine
+                    $existence = selectQueryIne("SELECT `curp` FROM `ine` WHERE `curp` = '$person->curp'");
+
+                    if ($existence == 0) {
+                        //la persona aun no cuenta con una ine pero puede tenerla
+                        echo '<th scope="row">-</th>';
+                        echo '<th scope="row">-</th>';
+                        echo '<th scope="row">-</th>';
+                        echo '<th scope="row">-</th>';
+                        echo '<th scope="row">-</th>';
+                        //la persona puede ser registrada mostrar el botón
+                        echo '<td><a class="btn btn-primary" href="./register.php?curp=' . $person->curp . '">Registrar</a></td>';
+                    } else {
+                        echo '<th scope="row">' . $personIne->claveElector . '</th>';
+                        echo '<th scope="row">' . $personIne->anoRegistro . '</th>';
+                        echo '<th scope="row">' . $personIne->emision . '</th>';
+                        echo '<th scope="row">' . $personIne->vigencia . '</th>';
+                        echo '<th scope="row">' . $personIne->seccion . '</th>';
+                        echo '<td><a class="btn btn-primary" href="./view_ine.php?curp=' . $personIne->claveElector . '">Visualizar</a></td>';
+                    }
                 } else {
-                    echo '<td><a class="btn btn-primary" href="#">Visualizar</a></td>';
+                    echo '<th scope="row">-</th>';
+                    echo '<th scope="row">-</th>';
+                    echo '<th scope="row">-</th>';
+                    echo '<th scope="row">-</th>';
+                    echo '<th scope="row">-</th>';
+                    echo '<td><button disabled class="btn btn-primary" href="#">No válido</button></td>';
                 }
-
-            } else {
-                echo '<td><button disabled class="btn btn-primary" href="#">No válido</button></td>';
-            }
-            echo '</tr>';
-        } ?>
+                echo '</tr>';
+            } ?>
 
 
-        <!-- colocamos el tbody -->
-                </tbody>
-            </table>
+  <!-- colocamos el tbody -->
+  </tbody>
+</table>
 
 
-        <?php } else {
+<?php } else {
         echo 'no hay registros que cumplan tu busqueda.';
     }
 }
@@ -299,5 +391,258 @@ function getEstadoName($id)
 
 function registerNewRegisterData($ObjData)
 {
-    echo $ObjData;
+    //create date
+    $registerYear = strval($ObjData->birthday['year']);
+    $registerMonth = strval($ObjData->birthday['month']);
+    $registerDay = strval($ObjData->birthday['day']);
+
+    $birthday = "$registerYear-" . "$registerMonth-" . "$registerDay";
+
+    $curp = strval($ObjData->curp);
+    $name = strval($ObjData->name);
+    $lastName1 = strval($ObjData->lastName1);
+    $lastName2 = strval($ObjData->lastName2);
+    $sex = intval($ObjData->sex);
+
+    //datos de elector
+    $claveElector = strval($ObjData->claveElector);
+    $seccion = intval($ObjData->seccion);
+
+    //direccion
+    $calle = strval($ObjData->address['calle']);
+    $numExterior = strval($ObjData->address['numExterior']);
+    $numInterior = !empty($ObjData->address['numInterior']) ? strval($ObjData->address['numInterior']) : "NULL";
+    $colonia = strval($ObjData->address['colonia']);
+    $codigoPostal = intval($ObjData->address['codigoPostal']);
+    $estado = strval($ObjData->address['estado']);
+    $municipio = strval($ObjData->address['municipio']);
+
+    //inicio fin
+    $emision = 2022;
+    $vigencia = 2022 + 10;
+    $anoRegistro = $emision;
+
+    $datosRegistro = "INSERT INTO `ine`(`curp`, `claveElector`, `seccion`, `vigencia`, `emision`, `sexo`, `nombre`, `apellidoPaterno`, `apellidoMaterno`, `fechaNacimiento`, `añoRegistro`, `calle`, `numeroExterior`, `numeroInterior`, `colonia`, `Municipio`, `Estado`, `codigoPostal`) VALUES
+    (
+        '$curp',
+        '$claveElector',
+        $seccion,
+        $vigencia,
+        $emision,
+        $sex,
+        '$name',
+        '$lastName1',
+        '$lastName2',
+        '$birthday',
+         $anoRegistro,
+        '$calle',
+        '$numExterior',
+        '$numInterior',
+        '$colonia',
+        '$municipio',
+        '$estado',
+        '$codigoPostal'
+    )";
+
+    $insert = insertDatWithReturnTrue($datosRegistro);
+
+    if ($insert == true) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+function insertDatWithReturnTrue($sql)
+{
+    $connection = getConectionIne();
+
+    if ($connection->query($sql) === TRUE) {
+        return true;
+    } else {
+        return $connection->error;
+    }
+}
+
+
+function getPersonIne($curp)
+{
+    $checkClaveElector = "SELECT * FROM `ine` WHERE `curp` = '$curp'";
+
+    $datosRegistro = selectQueryIne($checkClaveElector);
+
+    if ($datosRegistro != 0) {
+
+        while ($row = $datosRegistro->fetch_assoc()) {
+
+            //fecha de nacimiento
+            $fechaRegistro = explode('-', $row['fechaNacimiento']);
+            $year = $fechaRegistro[0];
+            $month   = $fechaRegistro[1];
+            $day  = $fechaRegistro[2];
+
+            $birthday = "$year-" . "$month-" . "$day";
+
+            $curp = $row['nombre'];
+            $name = $row['nombre'];
+            $lastName1 = $row['apellidoMaterno'];
+            $lastName2 = $row['apellidoPaterno'];
+            $sex = $row['sexo'];
+
+            //datos de elector
+            $claveElector = $row['claveElector'];
+            $seccion = $row['seccion'];
+
+            //direccion
+            $calle = $row['calle'];
+            $numExterior = $row['numeroExterior'];
+            $numInterior = $row['numeroInterior'];
+            $colonia = $row['colonia'];
+            $codigoPostal = $row['codigoPostal'];
+            $estado = $row['Estado'];
+            $municipio = $row['Municipio'];
+            $anoRegistro = $row['añoRegistro'];
+            $emision = $row['emision'];
+            $vigencia = $row['vigencia'];
+
+
+            return (object) array(
+                'curp' => $curp,
+                'name' => $name,
+                'lastName1' => $lastName1,
+                'lastName2' => $lastName2,
+                'sex' => $sex,
+                'birthday' => (object) array(
+                    'day' => $day,
+                    'month' => $month,
+                    'year' => $year,
+                ),
+                'direccion' => (object) array(
+                    'calle' => $calle,
+                    'numeroExterior' => $numExterior,
+                    'numeroInterior' => $numInterior,
+                    'colonia' => $colonia,
+                    'codigoPostal' => $codigoPostal,
+                    'estado' => $estado,
+                    'municipio' => $municipio
+                ),
+                'claveElector' => $claveElector,
+                'seccion' => $seccion,
+                'anoRegistro' => $anoRegistro,
+                'emision' => $emision,
+                'vigencia' => $vigencia
+            );
+        }
+    } else {
+        return 0;
+    }
+}
+
+function getPersonclaveElector($curp)
+{
+    $checkClaveElector = "SELECT * FROM `ine` WHERE `claveElector` = '$curp'";
+
+    $datosRegistro = selectQueryIne($checkClaveElector);
+
+    if ($datosRegistro != 0) {
+
+        while ($row = $datosRegistro->fetch_assoc()) {
+
+            //fecha de nacimiento
+            $fechaRegistro = explode('-', $row['fechaNacimiento']);
+            $year = $fechaRegistro[0];
+            $month   = $fechaRegistro[1];
+            $day  = $fechaRegistro[2];
+
+            $birthday = "$year-" . "$month-" . "$day";
+
+            $curp = $row['curp'];
+            $name = $row['nombre'];
+            $lastName1 = $row['apellidoMaterno'];
+            $lastName2 = $row['apellidoPaterno'];
+            $sex = $row['sexo'];
+
+            //datos de elector
+            $claveElector = $row['claveElector'];
+            $seccion = $row['seccion'];
+
+            //direccion
+            $calle = $row['calle'];
+            $numExterior = $row['numeroExterior'];
+            $numInterior = $row['numeroInterior'];
+            $colonia = $row['colonia'];
+            $codigoPostal = $row['codigoPostal'];
+            $estado = $row['Estado'];
+            $municipio = $row['Municipio'];
+            $anoRegistro = $row['añoRegistro'];
+            $emision = $row['emision'];
+            $vigencia = $row['vigencia'];
+
+
+            return (object) array(
+                'curp' => $curp,
+                'name' => $name,
+                'lastName1' => $lastName1,
+                'lastName2' => $lastName2,
+                'sex' => $sex,
+                'birthday' => (object) array(
+                    'day' => $day,
+                    'month' => $month,
+                    'year' => $year,
+                ),
+                'direccion' => (object) array(
+                    'calle' => $calle,
+                    'numeroExterior' => $numExterior,
+                    'numeroInterior' => $numInterior,
+                    'colonia' => $colonia,
+                    'codigoPostal' => $codigoPostal,
+                    'estado' => $estado,
+                    'municipio' => $municipio
+                ),
+                'claveElector' => $claveElector,
+                'seccion' => $seccion,
+                'anoRegistro' => $anoRegistro,
+                'emision' => $emision,
+                'vigencia' => $vigencia
+            );
+        }
+    } else {
+        return 0;
+    }
+}
+
+function updateRegisterData($ObjData)
+{
+    //datos de elector
+    $claveElector = strval($ObjData->claveElector);
+    $seccion = intval($ObjData->seccion);
+
+    //direccion
+    $calle = strval($ObjData->address['calle']);
+    $numExterior = strval($ObjData->address['numExterior']);
+    $numInterior = !empty($ObjData->address['numInterior']) ? strval($ObjData->address['numInterior']) : "NULL";
+    $colonia = strval($ObjData->address['colonia']);
+    $codigoPostal = intval($ObjData->address['codigoPostal']);
+    $estado = strval($ObjData->address['estado']);
+    $municipio = strval($ObjData->address['municipio']);
+
+
+    $datosRegistro = "UPDATE `ine` SET
+    `seccion`='$seccion',
+    `calle`='$calle',
+    `numeroExterior`='$numExterior',
+    `numeroInterior`='$numInterior',
+    `colonia`='$colonia',
+    `Municipio`='$municipio',
+    `Estado`='$estado',
+    `codigoPostal`='$codigoPostal'
+    WHERE `claveElector` = '$claveElector';";
+
+    $insert = insertDatWithReturnTrue($datosRegistro);
+
+    if ($insert == true) {
+        return 1;
+    } else {
+        return 0;
+    }
 }

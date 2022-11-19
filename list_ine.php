@@ -7,5 +7,6 @@
     <?php include('./search_curp.php'); ?>
 
     <div id="searchResults">
-        <!-- los elemntos encontrados llegarán a esta posición -->
+      <!-- los elemntos encontrados llegarán a esta posición -->
+      <?php listPersons(); ?>
     </div>
