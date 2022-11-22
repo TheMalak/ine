@@ -106,10 +106,27 @@
 
   <br><br>
   <div class="d-flex">
-    <button type="submit" class="btn btn-primary m-auto d-flex">Enviar</button>
+    <button type="submit" id="elSubmit" class="btn btn-primary m-auto d-flex">Enviar</button>
+    <a href="./index.php" id="backRegisterSuccess" class="btn btn-primary m-auto d-flex d-none">Volver a lista</a>
   </div>
   <br><br>
-
   </div>
 
 </form>
+
+<div class="modal fade" id="completedModal" tabindex="-1" aria-labelledby="completedModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="completedModalLabel">Registro de ine exitoso</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body  m-auto d-flex">
+        <a href="./list_ine.php" class="btn btn-primary text-center" id="viewDataInserted">Regresar al listado</a>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ver al usuario</button>
+      </div>
+    </div>
+  </div>
+</div>

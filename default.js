@@ -190,7 +190,27 @@ $("#newRegister").on("submit", function (e) {
             // $('#viewDataInserted').prop("href", "./view_user.php?curp=" + jsonObject[0].curp + "");
             // $('#completedModal').modal('show');
             // clearAllInputs();
-            console.log(resultado);
+
+            $('#claveElector').prop("disabled", true);
+            $('#section').prop("disabled", true);
+            $('#calle').prop("disabled", true);
+            $('#numExterior').prop("disabled", true);
+            $('#numInterior').prop("disabled", true);
+            $('#colonia').prop("disabled", true);
+            $('#codigoPostal').prop("disabled", true);
+            $('#estado').prop("disabled", true);
+            $('#municipio').prop("disabled", true);
+
+            // // parse = $.parseJSON(resultado);
+            // // console.log(parse);
+            // // $('#loadingModal').modal('toggle');
+            // // $('#viewDataInserted').prop("href", "./view_user.php?curp=" + jsonObject[0].curp + "");
+            // $('#completedModal').modal('show');
+            // // clearAllInputs();
+            // console.log(resultado);
+            $('#elSubmit').addClass('d-none');
+            alert("Registro con exito");
+            $('#backRegisterSuccess').removeClass('d-none');
         }
 
     });

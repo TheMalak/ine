@@ -1,0 +1,29 @@
+body {
+  font-family: 'Poppins',
+    sans-serif;
+  background-image: url(./assets/pattern.webp);
+}
+
+.btn-primary {
+  background-color: #D1398B;
+  border-radius: 0 !important;
+  border: 0 !important;
+}
+
+.container {
+  background-color: white;
+}
+
+.btn-primary:hover {
+  background-color: #D1398B;
+  border-radius: 0 !important;
+  border: 0 !important;
+}
+
+.btn {
+  border-radius: 0 !important;
+}
+
+.form-control {
+  border-radius: 0 !important;
+}

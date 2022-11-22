@@ -396,7 +396,7 @@ function registerNewRegisterData($ObjData)
     $registerMonth = strval($ObjData->birthday['month']);
     $registerDay = strval($ObjData->birthday['day']);
 
-    $birthday = "$registerYear-" . "$registerMonth-" . "$registerDay";
+    $birthday = "$registerYear-" . "$registerDay-" . "$registerMonth";
 
     $curp = strval($ObjData->curp);
     $name = strval($ObjData->name);
